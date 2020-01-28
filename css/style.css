@@ -1,0 +1,54 @@
+/* VARIABLES
+*******************************************************************************/
+:root {
+  --body-bg-color: ;
+}
+
+/* WEBFONTS
+*******************************************************************************/
+@font-face {
+  font-family: "Roboto";
+  src: url("../webfonts/Roboto-Thin-webfont.woff") format("woff");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("../webfonts/Roboto-Light-webfont.woff") format("woff");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../webfonts/Roboto-Regular-webfont.woff") format("woff");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../webfonts/Roboto-Medium-webfont.woff") format("woff");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../webfonts/Roboto-Bold-webfont.woff") format("woff");
+  font-weight: 700;
+}
+
+/* GENERAL STYLES
+*******************************************************************************/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: "Roboto";
+  overflow: auto;
+}
+
+/* COMPONENTS
+*******************************************************************************/
+.o-container {
+  min-height: 100vh;
+  width: 100%;
+}
