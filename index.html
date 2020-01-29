@@ -12,75 +12,114 @@
       <div class="c-calculator">
         <div class="c-display">
           <div class="c-display__top">
-            <p class="c-display__top-txt">x+-*/</p>
+            <p class="c-display__top-txt js-old-display"></p>
           </div>
           <div class="c-display__bottom">
-            <p class="c-display__bottom-txt">0123456789</p>
+            <p class="c-display__bottom-txt js-current-display"></p>
           </div>
         </div>
-        <div class="c-operations">
+        <div class="c-operations js-operations">
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt">CE</a>
+            <a href="#" class="c-btn c-btn--alt" data-cmd="CE">CE</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt">C</a>
+            <a href="#" class="c-btn c-btn--alt" data-cmd="C">C</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt">&larr;</a>
+            <a href="#" class="c-btn c-btn--alt" data-cmd="backspace">&larr;</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&divide;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operator"
+              >&divide;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">7</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="7">7</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">8</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="8">8</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">9</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="9">9</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&times;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operator"
+              >&times;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">4</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="4">4</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">5</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="5">5</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">6</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="6">6</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&minus;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operator"
+              >&minus;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">1</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="1">1</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">2</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="2">2</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">3</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="3">3</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&plus;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operator"
+              >&plus;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&plusmn;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operand-mod"
+              data-mod="+-"
+              >&plusmn;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn">0</a>
+            <a href="#" class="c-btn" data-cmd="operand" data-num="0">0</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&period;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="operand-mod"
+              data-mod="."
+              >&period;</a
+            >
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt u-bigger-font">&equals;</a>
+            <a
+              href="#"
+              class="c-btn c-btn--alt u-bigger-font"
+              data-cmd="compute"
+              >&equals;</a
+            >
           </div>
         </div>
       </div>
     </div>
+
+    <script src="./js/main.js"></script>
   </body>
 </html>
