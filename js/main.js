@@ -6,7 +6,8 @@ const calculator = {
   history: "",
   queuedCmd: "",
   queuedOperator: "",
-  currentDisp: "0",
+  lastOperator: "",
+  currentCmd: "0",
   currentResult: "",
   isCleared: true,
   hasFloat: false,
@@ -51,12 +52,13 @@ const handlers = {
     if (calculator.hasQueuedOp) calculator.isCalculating = true;
 
     if (calculator.isCleared) {
-      calculator.currentDisp = operand;
+      calculator.currentCmd = operand;
       calculator.isCleared = false;
     } else {
-      calculator.currentDisp += operand;
+      calculator.currentCmd += operand;
     }
 
+    calculator.isDisplayingResult = false;
     view.updateView();
   },
 
@@ -64,17 +66,17 @@ const handlers = {
   modifyOperand: function(target) {
     if (calculator.isDisplayingResult) return;
     const mod = target.dataset.mod;
-    const currentDispIsNegative = calculator.currentDisp.startsWith("-");
+    const currentCmdIsNegative = calculator.currentCmd.startsWith("-");
 
     if (calculator.isCleared && mod == "+-") return;
-    if (!calculator.isCleared && !currentDispIsNegative && mod == "+-") {
-      calculator.currentDisp = "-" + calculator.currentDisp;
+    if (!calculator.isCleared && !currentCmdIsNegative && mod == "+-") {
+      calculator.currentCmd = "-" + calculator.currentCmd;
     }
-    if (!calculator.isCleared && currentDispIsNegative && mod == "+-") {
-      calculator.currentDisp = calculator.currentDisp.substring(1);
+    if (!calculator.isCleared && currentCmdIsNegative && mod == "+-") {
+      calculator.currentCmd = calculator.currentCmd.substring(1);
     }
     if (!calculator.hasFloat && mod == ".") {
-      calculator.currentDisp += ".";
+      calculator.currentCmd += ".";
       calculator.hasFloat = true;
       calculator.isCleared = false;
     }
@@ -84,16 +86,19 @@ const handlers = {
 
   clear: function() {
     calculator.history = "";
-    calculator.currentDisp = "0";
+    calculator.currentCmd = "0";
     calculator.currentResult = "";
     calculator.queuedCmd = "";
+    calculator.queuedOperator = "";
+    calculator.lastOperator = "";
+    calculator.hasQueuedOp = false;
     calculator.isCleared = true;
     view.updateView();
   },
 
   // Only Clear Current Entry
   clearEntry: function() {
-    calculator.currentDisp = "0";
+    calculator.currentCmd = "0";
     calculator.isCleared = true;
     view.updateView();
   },
@@ -103,12 +108,12 @@ const handlers = {
     if (calculator.isDisplayingResult) {
       return;
     }
-    if (calculator.currentDisp.length === 1) {
-      calculator.currentDisp = "0";
+    if (calculator.currentCmd.length === 1) {
+      calculator.currentCmd = "0";
     } else {
-      calculator.currentDisp = calculator.currentDisp.substring(
+      calculator.currentCmd = calculator.currentCmd.substring(
         0,
-        calculator.currentDisp.length - 1
+        calculator.currentCmd.length - 1
       );
     }
 
@@ -120,12 +125,12 @@ const handlers = {
     let calculation;
 
     if (calculator.currentResult.length == 0) {
-      calculation = calculator.queuedCmd + " " + calculator.currentDisp;
+      calculation = calculator.queuedCmd + " " + calculator.currentCmd;
     } else {
       calculation =
         calculator.currentResult +
         ` ${calculator.queuedOperator} ` +
-        calculator.currentDisp;
+        calculator.currentCmd;
     }
 
     return calculation;
@@ -139,14 +144,14 @@ const handlers = {
     if (calculator.isCalculating) {
       calculator.currentResult = calculator.operate(this.determineCalc());
       calculator.history =
-        calculator.queuedCmd + " " + calculator.currentDisp + ` ${operator}`;
+        calculator.queuedCmd + " " + calculator.currentCmd + ` ${operator}`;
       calculator.queuedCmd = calculator.history;
       calculator.isCalculating = false;
     } else {
       if (calculator.queuedCmd.length > 0) {
         calculator.history = calculator.queuedCmd.slice(0, -2) + ` ${operator}`;
       } else {
-        calculator.history = calculator.currentDisp + ` ${operator}`;
+        calculator.history = calculator.currentCmd + ` ${operator}`;
       }
       calculator.queuedCmd = calculator.history;
     }
@@ -154,28 +159,48 @@ const handlers = {
     calculator.queuedOperator = calculator.history.charAt(
       calculator.history.length - 1
     );
+
+    calculator.lastOperator = operator;
   },
 
-  // When the operator is the equal sign we only want the current result
+  handleRepeatedEquals: function() {
+    if (calculator.lastOperator != "=") return;
+    let repeatOperand = calculator.queuedCmd.substr(
+      calculator.queuedCmd.length - 3,
+      1
+    );
+    calculator.isCalculating = true;
+    calculator.currentResult = calculator.currentCmd;
+    calculator.currentCmd = repeatOperand;
+  },
+
+  /*
+    Only perform = computation when there is a queuedCmd
+    Display only the current Result
+  */
   queueOperation: function(target) {
     const operator = target.dataset.op;
-    if (operator == "=") {
+    if (calculator.queuedCmd.length == 0) {
+      calculator.isCalculating = false;
+    }
+    if (operator == "=" && calculator.queuedCmd.length > 0) {
+      this.handleRepeatedEquals();
       this.performOperation(calculator.queuedOperator);
       calculator.history = "";
-      calculator.queuedCmd = "";
-      calculator.hasQueuedOp = false;
-    } else {
+      calculator.lastOperator = "=";
+    }
+    if (operator != "=") {
       this.performOperation(operator);
-      calculator.hasQueuedOp = true;
     }
 
     if (calculator.currentResult.length > 0) {
-      calculator.currentDisp = calculator.currentResult;
+      calculator.currentCmd = calculator.currentResult;
       calculator.isDisplayingResult = true;
     } else {
-      calculator.currentDisp = "0";
+      calculator.currentCmd = "0";
     }
 
+    calculator.hasQueuedOp = true;
     calculator.isCleared = true;
     view.updateView();
   }
@@ -185,6 +210,7 @@ const handlers = {
 const view = {
   setupEventListeners: function() {
     operationsElem.onclick = function(e) {
+      e.preventDefault();
       switch (e.target.dataset.cmd) {
         case "operand":
           handlers.inputOperand(e.target);
@@ -210,7 +236,7 @@ const view = {
 
   updateView: function() {
     historyDisplayElem.textContent = calculator.history;
-    currentDisplayElem.textContent = calculator.currentDisp;
+    currentDisplayElem.textContent = calculator.currentCmd;
   }
 
   // TODO: Add Alert/Error service
