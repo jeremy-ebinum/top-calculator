@@ -108,15 +108,19 @@ body {
   align-items: flex-end;
 }
 
+/* TODO: Convert Top Display to Carousel */
 .c-display__top {
   grid-area: d-top;
+  vertical-align: baseline;
 }
 
 .c-display__top-txt {
+  display: inline-block;
   font-family: "Roboto";
   font-weight: 400;
   font-size: 1.5rem;
   letter-spacing: 1px;
+  vertical-align: baseline;
   color: var(--muted-text-color);
 }
 
