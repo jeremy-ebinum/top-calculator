@@ -1,6 +1,8 @@
 const operationsElem = document.querySelector(".js-operations");
 const currentDisplayElem = document.querySelector(".js-current-display");
 const historyDisplayElem = document.querySelector(".js-history-display");
+const currentDisplayTxtElem = document.querySelector(".js-current-display-txt");
+const historyDisplayTxtElem = document.querySelector(".js-history-display-txt");
 
 const calculator = {
   history: "",
@@ -103,7 +105,7 @@ const handlers = {
     view.updateView();
   },
 
-  // Delete a character from current Disply/Entry
+  // Delete a character from current command
   backspaceEntry: function() {
     if (calculator.isDisplayingResult) {
       return;
@@ -176,7 +178,7 @@ const handlers = {
 
   /*
     Only perform = computation when there is a queuedCmd
-    Display only the current Result
+    Display only the current Result on Equals operation
   */
   queueOperation: function(target) {
     const operator = target.dataset.op;
@@ -208,6 +210,9 @@ const handlers = {
 
 // Handle DOM Manipulation
 const view = {
+  maxHistoryDisplayTxtW: 0,
+  maxCurrentDisplaYTxtW: 0,
+
   setupEventListeners: function() {
     operationsElem.onclick = function(e) {
       e.preventDefault();
@@ -234,9 +239,44 @@ const view = {
     };
   },
 
+  handleHistoryDisplayOverflow: function() {
+    console.log("TIME TO CAROUSEL HISTORY!");
+  },
+
+  handleCurrentDisplayOverflow: function() {
+    console.log("TIME TO CAROUSEL CURRENT!");
+  },
+
+  handleDisplayOverflow: function() {
+    const historyTxtWLimit =
+      historyDisplayElem.offsetWidth -
+      parseInt(getComputedStyle(historyDisplayTxtElem)["fontSize"]) -
+      parseInt(getComputedStyle(historyDisplayTxtElem)["letterSpacing"]);
+    const currentTxtWLimit =
+      currentDisplayElem.offsetWidth -
+      parseInt(getComputedStyle(currentDisplayTxtElem)["fontSize"]) -
+      parseInt(getComputedStyle(currentDisplayTxtElem)["letterSpacing"]);
+
+    if (historyDisplayTxtElem.offsetWidth > this.maxHistoryDisplayTxtW) {
+      this.maxHistoryDisplayTxtW = historyDisplayTxtElem.offsetWidth;
+    }
+    if (currentDisplayTxtElem.offsetWidth > this.maxCurrentDisplaYTxtW) {
+      this.maxCurrentDisplaYTxtW = currentDisplayTxtElem.offsetWidth;
+    }
+
+    if (this.maxHistoryDisplayTxtW >= historyTxtWLimit) {
+      this.handleHistoryDisplayOverflow();
+    }
+    if (this.maxCurrentDisplaYTxtW >= currentTxtWLimit) {
+      this.handleCurrentDisplayOverflow();
+    }
+  },
+
   updateView: function() {
-    historyDisplayElem.textContent = calculator.history;
-    currentDisplayElem.textContent = calculator.currentCmd;
+    historyDisplayTxtElem.textContent = calculator.history;
+    currentDisplayTxtElem.textContent = calculator.currentCmd;
+
+    this.handleDisplayOverflow();
   }
 
   // TODO: Add Alert/Error service

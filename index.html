@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <!-- Project CSS -->
     <link rel="stylesheet" href="./css/style.css" />
     <title>TOP | Calculator</title>
   </head>
@@ -11,27 +14,39 @@
     <div class="o-container">
       <div class="c-calculator">
         <div class="c-display">
-          <div class="c-display__top">
-            <p class="c-display__top-txt js-history-display"></p>
+          <button
+            class="c-display__top-scroller c-btn  c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-history-display-scroller"
+          >
+            <i class="fas fa-angle-left"></i>
+          </button>
+          <div class="c-display__top js-history-display">
+            <span class="c-display__top-txt js-history-display-txt"></span>
           </div>
-          <div class="c-display__bottom">
-            <p class="c-display__bottom-txt js-current-display"></p>
+          <button
+            class="c-display__bottom-scroller c-btn c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-current-display-scroller"
+          >
+            <i class="fas fa-angle-left"></i>
+          </button>
+          <div class="c-display__bottom js-current-display">
+            <span class="c-display__bottom-txt js-current-display-txt"></span>
           </div>
         </div>
         <div class="c-operations js-operations">
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt" data-cmd="CE">CE</a>
+            <a href="#" class="c-btn c-btn--alt-color" data-cmd="CE">CE</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt" data-cmd="C">C</a>
+            <a href="#" class="c-btn c-btn--alt-color" data-cmd="C">C</a>
           </div>
           <div class="c-operations__cmd">
-            <a href="#" class="c-btn c-btn--alt" data-cmd="backspace">&larr;</a>
+            <a href="#" class="c-btn c-btn--alt-color" data-cmd="backspace"
+              >&larr;</a
+            >
           </div>
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operator"
               data-op="÷"
               >&divide;</a
@@ -49,7 +64,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operator"
               data-op="×"
               >&times;</a
@@ -67,7 +82,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operator"
               data-op="-"
               >&minus;</a
@@ -85,7 +100,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operator"
               data-op="+"
               >&plus;</a
@@ -94,7 +109,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operand-mod"
               data-mod="+-"
               >&plusmn;</a
@@ -106,7 +121,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operand-mod"
               data-mod="."
               >&period;</a
@@ -115,7 +130,7 @@
           <div class="c-operations__cmd">
             <a
               href="#"
-              class="c-btn c-btn--alt u-bigger-font"
+              class="c-btn c-btn--alt-color u-bigger-font"
               data-cmd="operator"
               data-op="="
               >&equals;</a
@@ -125,6 +140,9 @@
       </div>
     </div>
 
+    <!-- jQuery -->
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <!-- Project Scripts -->
     <script src="./js/main.js"></script>
   </body>
 </html>
