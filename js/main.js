@@ -3,7 +3,6 @@ const currentDisplayElem = document.querySelector(".js-current-display");
 const historyDisplayElem = document.querySelector(".js-history-display");
 const currentDisplayTxtElem = document.querySelector(".js-current-display-txt");
 const historyDisplayTxtElem = document.querySelector(".js-history-display-txt");
-const displayElem = document.querySelector(".js-display");
 const historyScrollLeftElem = document.querySelector(".js-history-scroll-l");
 const currentScrollLeftElem = document.querySelector(".js-current-scroll-l");
 const historyScrollRightElem = document.querySelector(".js-history-scroll-r");
@@ -266,12 +265,13 @@ const view = {
   },
 
   scrollHistoryDisplayLeft: function(e) {
-    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
-    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
     const historyTxtRelLft = parseInt($(historyDisplayTxtElem).position().left);
-    const scrollAmt = fontSize + ltrSpacing;
 
     if (historyTxtRelLft > 0) return;
+
+    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
+    const scrollAmt = fontSize + ltrSpacing;
 
     if (historyTxtRelLft + scrollAmt > 0) {
       view.animateElemRightPosition(
@@ -291,12 +291,13 @@ const view = {
   },
 
   scrollCurrentDisplayLeft: function(e) {
-    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
-    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
     const currentTxtRelLft = parseInt($(currentDisplayTxtElem).position().left);
-    const scrollAmt = fontSize + ltrSpacing;
 
     if (currentTxtRelLft > 0) return;
+
+    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
+    const scrollAmt = fontSize + ltrSpacing;
 
     if (currentTxtRelLft + scrollAmt > 0) {
       view.animateElemRightPosition(
@@ -316,12 +317,14 @@ const view = {
   },
 
   scrollHistoryDisplayRight: function(e) {
-    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
-    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
     const historyTxtCssRight = parseInt($(historyDisplayTxtElem).css("right"));
-    const scrollAmt = fontSize + ltrSpacing;
 
     if (historyTxtCssRight >= 0) return;
+
+    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
+    const scrollAmt = fontSize + ltrSpacing;
+
     if (historyTxtCssRight + scrollAmt > 0) {
       view.animateElemRightPosition(historyDisplayTxtElem, `0`, 100);
     } else {
@@ -336,12 +339,14 @@ const view = {
   },
 
   scrollCurrentDisplayRight: function(e) {
-    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
-    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
     const currentTxtCssRight = parseInt($(currentDisplayTxtElem).css("right"));
-    const scrollAmt = fontSize + ltrSpacing;
 
     if (currentTxtCssRight >= 0) return;
+
+    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
+    const scrollAmt = fontSize + ltrSpacing;
+
     if (currentTxtCssRight + scrollAmt > 0) {
       view.animateElemRightPosition(currentDisplayTxtElem, `0`, 100);
     } else {
@@ -368,11 +373,13 @@ const view = {
   },
 
   updateDisplayWLimits: function() {
-    this.historyTxtWLimit = historyDisplayElem.offsetWidth;
-    this.currentTxtWLimit = currentDisplayElem.offsetWidth;
+    this.historyTxtWLimit = historyDisplayElem.offsetWidth + window.pageXOffset;
+    this.currentTxtWLimit = currentDisplayElem.offsetWidth + window.pageXOffset;
 
-    this.maxHistoryDisplayTxtW = historyDisplayTxtElem.offsetWidth;
-    this.maxCurrentDisplaYTxtW = currentDisplayTxtElem.offsetWidth;
+    this.maxHistoryDisplayTxtW =
+      historyDisplayTxtElem.offsetWidth + window.pageXOffset;
+    this.maxCurrentDisplaYTxtW =
+      currentDisplayTxtElem.offsetWidth + window.pageXOffset;
   },
 
   updateHistoryScollLeftElemVisibility: function() {
