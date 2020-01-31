@@ -24,8 +24,11 @@
   --display-top-font-size: 1.2rem;
   --display-bottom-font-size: 1.6rem;
   --calculator-cmd-h: 35px;
+  --calculator-cmd-font-size: 1.2rem;
   --btn-small-w: 25px;
   --btn-small-h: 35px;
+  --h-modal-bg-color: hsl(194, 100%, 3%, 75%);
+  --h-modal-h-font-size: 1.5rem;
 }
 
 /* WEBFONTS
@@ -107,7 +110,7 @@ body {
   background: var(--primary-color);
   color: var(--light-text-color);
   font-family: "Roboto";
-  font-size: 1.2rem;
+  font-size: inherit;
   font-weight: 700;
   cursor: pointer;
   transition: background-color 400ms ease, color 200ms ease;
@@ -128,13 +131,36 @@ body {
   color: var(--dark-text-color);
 }
 
+.c-btn.c-btn--light-color {
+  background: var(--light-text-color);
+  color: var(--dark-text-color);
+}
+
+.c-btn.c-btn--light-color:hover {
+  background: var(--dark-text-color);
+  color: var(--light-text-color);
+}
+
 .c-btn.c-btn--small {
   width: var(--btn-small-w);
   height: var(--btn-small-h);
 }
 
+.c-btn.c-btn--contained {
+  width: var(--btn-contained-w);
+  height: var(--btn-contained-h);
+}
+
 .c-btn.c-btn--rounder {
   border-radius: 25%;
+}
+
+.c-btn.c-btn--flat {
+  border-radius: 0;
+}
+
+.c-btn.c-btn--circle {
+  border-radius: 50%;
 }
 
 .c-btn.c-btn--muted {
@@ -151,11 +177,45 @@ body {
   display: none;
 }
 
+.c-help-list {
+  border: 2px solid var(--primary-color);
+  /* padding: 0.5rem 0.75rem; */
+}
+
+.c-help-list__item {
+  padding: 0.5rem;
+  border-top: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--primary-color);
+  font-family: "Roboto";
+  display: flex;
+  justify-content: space-between;
+  /* margin-bottom: 0.25rem; */
+}
+
+.c-list-header-txt {
+  /* text-decoration: underline; */
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.c-list-term {
+  font-weight: 700;
+  margin-right: 1rem;
+}
+
+.c-list-term::after {
+  /* content: ":"; */
+}
+
+.c-list-desc {
+  font-weight: 400;
+}
+
 .c-calculator {
   width: var(--calculator-w);
   border: 1px solid var(--accent-color-1);
   border-radius: 3px;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
 }
 
 .c-display,
@@ -277,6 +337,62 @@ body {
 
 .c-operations__cmd {
   height: var(--calculator-cmd-h);
+  font-size: var(--calculator-cmd-font-size);
+}
+
+.c-help-toggle {
+  width: 6rem;
+  height: 1.5rem;
+  font-size: 1rem;
+  margin-left: 5px;
+  margin: 0.25rem;
+}
+
+/* Help Modal Component */
+.c-help-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--h-modal-bg-color);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  overflow: auto;
+}
+
+.c-help-modal.c-help-modal--is-hidden {
+  display: none;
+}
+
+.c-help-modal__content {
+  /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: #fff;
+}
+
+.c-help-modal__heading {
+  font-family: "Roboto";
+  font-weight: 500;
+  font-size: var(--h-modal-h-font-size, 1.5rem);
+  color: var(--dark-text-color);
+  margin: 1rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.c-help-modal__close {
+  width: 100px;
+  height: 30px;
+  margin: 0.5rem;
+  margin: 1rem 0;
 }
 
 /* MEDIA QUERIES
@@ -319,12 +435,20 @@ body {
     align-items: flex-start;
   }
 
+  .c-help-toggle {
+    margin-top: 1rem;
+  }
+
   .c-calculator {
-    margin-top: 2rem;
+    margin-top: 0.5rem;
     margin-left: 2rem;
   }
 
   .c-alert {
+    margin-left: 2rem;
+  }
+
+  .c-help-toggle {
     margin-left: 2rem;
   }
 }

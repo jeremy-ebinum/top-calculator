@@ -13,6 +13,16 @@
   <body>
     <!-- Container Object -->
     <div class="o-container js-container">
+      <!-- Help Modal Toggler -->
+      <div class="c-help-toggle">
+        <button
+          href="#"
+          class="c-btn c-btn--light-color c-btn--flat js-help-modal-open"
+          onclick="view.openHelpModal()"
+        >
+          Help
+        </button>
+      </div>
       <!-- Calculator Component -->
       <div class="c-calculator">
         <!-- Display Component -->
@@ -173,6 +183,74 @@
               data-op="="
             >
               &equals;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Modal  -->
+      <div class="c-help-modal c-help-modal--is-hidden js-help-modal">
+        <div class="c-help-modal__content">
+          <h2 class="c-help-modal__heading">Keyboard Controls</h2>
+
+          <dl class="c-help-list">
+            <div class="c-help-list__item">
+              <dt class="c-list-header-txt">Keyboard Keys</dt>
+              <dt class="c-list-header-txt">Function</dt>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">0 - 9 | Num0 - Num9</dt>
+              <dd class="c-list-desc">0 to 9</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">+ | Numpad +</dt>
+              <dd class="c-list-desc">Addition</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">- | Numpad -</dt>
+              <dd class="c-list-desc">Subtraction</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">x | Numpad *</dt>
+              <dd class="c-list-desc">Multiplication</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">/ | Numpad /</dt>
+              <dd class="c-list-desc">Division</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">= | Enter</dt>
+              <dd class="c-list-desc">Equals</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Backspace</dt>
+              <dd class="c-list-desc">Backspace</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Shift & Backspace</dt>
+              <dd class="c-list-desc">Clear Entry</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Ctrl & Shift & Backspace</dt>
+              <dd class="c-list-desc">Clear Calculator</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Shift & - | Shift & Numpad -</dt>
+              <dd class="c-list-desc">Negation</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">. | Numpad .</dt>
+              <dd class="c-list-desc">Decimal Point</dd>
+            </div>
+          </dl>
+
+          <div class="c-help-modal__close">
+            <button
+              type="js-help-modal-close"
+              class="c-btn"
+              onclick="view.closeHelpModal()"
+            >
+              Ok
             </button>
           </div>
         </div>

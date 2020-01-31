@@ -587,6 +587,21 @@ const view = {
     });
   },
 
+  openHelpModal: function() {
+    $(".js-help-modal")
+      .removeClass("c-help-modal--is-hidden")
+      .hide()
+      .fadeIn(300);
+    bodyStyle.overflow = "hidden";
+  },
+
+  closeHelpModal: function() {
+    $(".js-help-modal").fadeOut(200, () => {
+      $(this).addClass("c-help-modal--is-hidden");
+    });
+    bodyStyle.overflow = "";
+  },
+
   updateView: function() {
     historyDisplayTxtElem.textContent = calculator.history;
     currentDisplayTxtElem.textContent = calculator.currentCmd;
