@@ -15,35 +15,35 @@ const calculator = {
   lastOperator: "",
   currentCmd: "0",
   currentResult: "",
+  decimalLimit: 2,
   isCleared: true,
   hasFloat: false,
   hasQueuedOp: false,
   isCalculating: false,
   isDisplayingResult: false,
 
-  // TODO: Properly handle floating point numbers, general exception handling
   operations: {
     "+": function(a, b) {
-      return a + b;
+      return (a + b).toFixed(calculator.decimalLimit);
     },
     "-": function(a, b) {
-      return a - b;
+      return (a - b).toFixed(calculator.decimalLimit);
     },
     "×": function(a, b) {
-      return a * b;
+      return (a * b).toFixed(calculator.decimalLimit);
     },
     "÷": function(a, b) {
       if (b === 0) return 0;
-      return a / b;
+      return (a / b).toFixed(calculator.decimalLimit);
       // TODO: Disply Divide by Zero Error
     }
   },
 
   operate: function(calculation) {
     let expressionArr = calculation.split(" ");
-    let firstOperand = parseInt(expressionArr[0]);
+    let firstOperand = parseFloat(expressionArr[0]);
     let operator = expressionArr[1];
-    let secondOperand = parseInt(expressionArr[2]);
+    let secondOperand = parseFloat(expressionArr[2]);
 
     return this.operations[operator](firstOperand, secondOperand).toString();
   }
@@ -54,9 +54,11 @@ const handlers = {
   // Handle inputs 0 - 9, If we have an operator queued, prepare for calculation
   inputOperand: function(target) {
     const operand = target.dataset.num;
-    if (calculator.isCleared && operand === "0") return;
-
     if (calculator.hasQueuedOp) calculator.isCalculating = true;
+
+    if (calculator.isCleared && operand === "0") {
+      calculator.currentCmd = "0";
+    }
 
     if (calculator.isCleared) {
       calculator.currentCmd = operand;
@@ -82,7 +84,7 @@ const handlers = {
     if (!calculator.isCleared && currentCmdIsNegative && mod == "+-") {
       calculator.currentCmd = calculator.currentCmd.substring(1);
     }
-    if (!calculator.hasFloat && mod == ".") {
+    if (mod == "." && !calculator.hasFloat) {
       calculator.currentCmd += ".";
       calculator.hasFloat = true;
       calculator.isCleared = false;
@@ -152,6 +154,7 @@ const handlers = {
   performOperation: function(operator) {
     if (calculator.isCalculating) {
       calculator.currentResult = calculator.operate(this.determineCalc());
+      calculator.hasFloat = false;
       calculator.history =
         calculator.queuedCmd + " " + calculator.currentCmd + ` ${operator}`;
       calculator.queuedCmd = calculator.history;
