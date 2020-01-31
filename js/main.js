@@ -98,6 +98,7 @@ const handlers = {
     calculator.queuedCmd = "";
     calculator.queuedOperator = "";
     calculator.lastOperator = "";
+    calculator.hasFloat = false;
     calculator.hasQueuedOp = false;
     calculator.isCleared = true;
     view.updateView();
@@ -106,6 +107,7 @@ const handlers = {
   // Only Clear Current Entry
   clearEntry: function() {
     calculator.currentCmd = "0";
+    calculator.hasFloat = false;
     calculator.isCleared = true;
     view.updateView();
   },
@@ -367,9 +369,107 @@ const view = {
     currentScrollRightElem.onclick = view.scrollCurrentDisplayRight;
   },
 
+  handleDigitButtonPresses: function(e) {
+    const digitRegex = /(Digit|Numpad)([0-9])/;
+    if (digitRegex.test(e.code)) {
+      $(`[data-num=${e.code.match(digitRegex)[2]}]`).click();
+    } else return;
+  },
+
+  handleOperatorButtonPresses: function(e) {
+    if (
+      e.key === "+" ||
+      e.code === "NumpadAdd" ||
+      (e.code === "Equal" && e.shiftKey)
+    ) {
+      $(`[data-op="+"]`).click();
+    }
+    if (
+      (e.code === "Minus" && !e.shiftKey) ||
+      (e.code === "NumpadSubtract" && !e.shiftKey)
+    ) {
+      $(`[data-op="-"]`).click();
+    }
+    if (e.code === "Equal" || e.code === "Enter") {
+      $(`[data-op="="]`).click();
+    }
+    if (e.code === "KeyX" || e.code === "NumpadMultiply") {
+      $(`[data-op="×"]`).click();
+    }
+    if (e.code === "Slash" || e.code === "NumpadDivide") {
+      $(`[data-op="÷"]`).click();
+    }
+
+    return;
+  },
+
+  handleModifierButtonPresses: function(e) {
+    if (e.code === "Backspace" && !e.shiftKey) {
+      $(`[data-cmd=backspace]`).click();
+    }
+    if (
+      (e.code === "Minus" && e.shiftKey) ||
+      (e.code === "NumpadSubtract" && e.shiftKey)
+    ) {
+      $(`[data-mod="+-"]`).click();
+    }
+    if (e.code === "Period" || e.code === "NumpadDecimal") {
+      $(`[data-mod="."]`).click();
+    }
+
+    return;
+  },
+
+  handleClearButtonPresses: function(e) {
+    if (e.code === "Backspace" && e.shiftKey && !e.ctrlKey) {
+      $(`[data-cmd="CE"]`).click();
+    }
+
+    if (e.code === "Backspace" && e.shiftKey && e.ctrlKey) {
+      $(`[data-cmd="C"]`).click();
+    }
+    return;
+  },
+
+  handleScrollButtonPresses: function(e) {
+    if (!view.currentDisplayIsOverflown && !view.historyDisplayIsOverflown) {
+      return;
+    }
+
+    if (view.currentDisplayIsOverflown) {
+      if (e.code == "ArrowRight") {
+        $(`.js-current-scroll-r`).click();
+      }
+      if (e.code == "ArrowLeft") {
+        $(`.js-current-scroll-l`).click();
+      }
+    }
+    if (view.historyDisplayIsOverflown) {
+      if (e.code == "ArrowDown") {
+        $(`.js-history-scroll-r`).click();
+      }
+      if (e.code == "ArrowUp") {
+        $(`.js-history-scroll-l`).click();
+      }
+    }
+
+    return;
+  },
+
+  setupKeyDownListener: function() {
+    window.addEventListener("keydown", function(e) {
+      view.handleScrollButtonPresses(e);
+      view.handleDigitButtonPresses(e);
+      view.handleOperatorButtonPresses(e);
+      view.handleModifierButtonPresses(e);
+      view.handleClearButtonPresses(e);
+    });
+  },
+
   setupEventListeners: function() {
     this.setupOperationsElemClickListener();
     this.setupScrollElemsClickListeners();
+    this.setupKeyDownListener();
   },
 
   updateDisplayWLimits: function() {
