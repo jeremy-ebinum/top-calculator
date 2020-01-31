@@ -18,10 +18,12 @@
   --alert-error-bg-color1: hsla(0, 100%, 50%, 75%);
   --alert-error-bg-color2: hsla(0, 100%, 50%, 40%);
   --alert-txt-color: hsl(240, 100%, 99%);
-  --calculator-w: 480px;
-  --calculator-display-h: 150px;
+  --calculator-w: 310px;
+  --calculator-display-h: 110px;
   --calculator-display-bg-color: #000a0d;
-  --calculator-cmd-h: 40px;
+  --display-top-font-size: 1.2rem;
+  --display-bottom-font-size: 1.6rem;
+  --calculator-cmd-h: 35px;
   --btn-small-w: 25px;
   --btn-small-h: 35px;
 }
@@ -87,8 +89,30 @@ body {
   min-width: max-content;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.c-btn {
+  display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  text-decoration: none;
+  background: var(--primary-color);
+  color: var(--light-text-color);
+  font-family: "Roboto";
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 400ms ease, color 200ms ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .c-btn:hover {
@@ -131,6 +155,7 @@ body {
   width: var(--calculator-w);
   border: 1px solid var(--accent-color-1);
   border-radius: 3px;
+  margin-top: 1rem;
 }
 
 .c-display,
@@ -198,9 +223,9 @@ body {
 }
 
 .c-display__top-txt {
-  bottom: 15%;
+  bottom: 10%;
   font-weight: 400;
-  font-size: 1.3rem;
+  font-size: var(--display-top-font-size);
   letter-spacing: 1px;
   vertical-align: baseline;
   color: var(--history-text-color);
@@ -214,7 +239,7 @@ body {
   top: 0;
   margin-top: 0.5rem;
   font-weight: 700;
-  font-size: 2.5rem;
+  font-size: var(--display-bottom-font-size);
   color: var(--light-text-color);
   letter-spacing: 2px;
 }
@@ -254,24 +279,52 @@ body {
   height: var(--calculator-cmd-h);
 }
 
-.c-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  border: none;
-  border-radius: 3px;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  text-decoration: none;
-  background: var(--primary-color);
-  color: var(--light-text-color);
-  font-family: "Roboto";
-  font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 400ms ease, color 200ms ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+/* MEDIA QUERIES
+*******************************************************************************/
+@media (min-width: 360px) {
+  :root {
+    --calculator-w: 350px;
+    --calculator-display-h: 120px;
+    --display-top-font-size: 1.1rem;
+    --display-bottom-font-size: 1.8rem;
+  }
+}
+
+@media (min-width: 400px) {
+  :root {
+    --calculator-w: 390px;
+  }
+}
+
+@media (min-width: 720px) {
+  :root {
+    --calculator-w: 640px;
+    --calculator-display-h: 150px;
+    --calculator-display-bg-color: #000a0d;
+    --display-top-font-size: 1.3rem;
+    --display-bottom-font-size: 2.5rem;
+    --calculator-cmd-h: 50px;
+    --btn-small-w: 25px;
+    --btn-small-h: 35px;
+  }
+
+  .c-operations__cmd * {
+    font-size: 1.6rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .o-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .c-calculator {
+    margin-top: 2rem;
+    margin-left: 2rem;
+  }
+
+  .c-alert {
+    margin-left: 2rem;
+  }
 }
