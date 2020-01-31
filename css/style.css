@@ -14,6 +14,10 @@
   --btn-muted-text-color: hsla(60, 67%, 85%, 50%);
   --btn-muted-hover-text-color: hsla(60, 67%, 85%, 90%);
   --btn-muted-hover-bg-color: hsla(214, 11%, 21%, 50%);
+  --alert-bg-color: hsl(0, 0%, 0%);
+  --alert-error-bg-color1: hsla(0, 100%, 50%, 75%);
+  --alert-error-bg-color2: hsla(0, 100%, 50%, 40%);
+  --alert-txt-color: hsl(240, 100%, 99%);
   --calculator-w: 480px;
   --calculator-display-h: 150px;
   --calculator-display-bg-color: #000a0d;
@@ -82,6 +86,7 @@ body {
   width: 100%;
   min-width: max-content;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -131,6 +136,31 @@ body {
 .c-display,
 .c-operations {
   width: 100%;
+}
+
+/* Alert Components will be created dynamically with JavaScript */
+.c-alert {
+  width: var(--calculator-w);
+  background: var(--alert-bg-color);
+  color: var(--alert-txt-color);
+  font-family: "Roboto";
+  text-align: center;
+  padding: 0.3rem 0.75rem;
+  margin: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.c-alert.c-alert--error {
+  background: linear-gradient(
+    45deg,
+    var(--alert-error-bg-color2),
+    var(--alert-error-bg-color1),
+    var(--alert-error-bg-color2)
+  );
+}
+
+.c-alert.c-alert--is-hidden {
+  display: none;
 }
 
 .c-display {

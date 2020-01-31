@@ -33,9 +33,12 @@ const calculator = {
       return (a * b).toFixed(calculator.decimalLimit);
     },
     "÷": function(a, b) {
-      if (b === 0) return 0;
+      if (b === 0) {
+        view.displayAlert("error", "You cannot divide by zero");
+        handlers.clear();
+        return;
+      }
       return (a / b).toFixed(calculator.decimalLimit);
-      // TODO: Disply Divide by Zero Error
     }
   },
 
@@ -557,6 +560,33 @@ const view = {
     });
   },
 
+  createAlert(type, message) {
+    const alertTypes = {
+      error: "c-alert--error"
+    };
+
+    if (!alertTypes[type]) return;
+
+    const alert = $("<div>", {
+      class: `c-alert ${alertTypes[type]} c-alert--is-hidden`
+    });
+    const msg = $("<span>", { class: `c-alert__txt` });
+    msg.text(message);
+    alert.append(msg);
+
+    return alert;
+  },
+
+  displayAlert(type, message, autoCloseTime = 3000) {
+    const alert = view.createAlert(type, message);
+    $(".js-container").append(alert);
+    $(alert).slideDown(300, function() {
+      setTimeout(() => {
+        $(this).slideUp(200);
+      }, autoCloseTime);
+    });
+  },
+
   updateView: function() {
     historyDisplayTxtElem.textContent = calculator.history;
     currentDisplayTxtElem.textContent = calculator.currentCmd;
@@ -564,8 +594,6 @@ const view = {
     this.scrollDisplayToTheEnd();
     this.handleDisplayOverflow();
   }
-
-  // TODO: Add Alert/Error service
 };
 
 // Start the calculator app
