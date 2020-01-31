@@ -3,6 +3,11 @@ const currentDisplayElem = document.querySelector(".js-current-display");
 const historyDisplayElem = document.querySelector(".js-history-display");
 const currentDisplayTxtElem = document.querySelector(".js-current-display-txt");
 const historyDisplayTxtElem = document.querySelector(".js-history-display-txt");
+const displayElem = document.querySelector(".js-display");
+const historyScrollLeftElem = document.querySelector(".js-history-scroll-l");
+const currentScrollLeftElem = document.querySelector(".js-current-scroll-l");
+const historyScrollRightElem = document.querySelector(".js-history-scroll-r");
+const currentScrollRightElem = document.querySelector(".js-current-scroll-r");
 
 const calculator = {
   history: "",
@@ -45,6 +50,7 @@ const calculator = {
   }
 };
 
+// Bridge View and Calculator
 const handlers = {
   // Handle inputs 0 - 9, If we have an operator queued, prepare for calculation
   inputOperand: function(target) {
@@ -212,8 +218,12 @@ const handlers = {
 const view = {
   maxHistoryDisplayTxtW: 0,
   maxCurrentDisplaYTxtW: 0,
+  historyTxtWLimit: 0,
+  currentTxtWLimit: 0,
+  historyDisplayIsOverflown: false,
+  currentDisplayIsOverflown: false,
 
-  setupEventListeners: function() {
+  setupOperationsElemClickListener: function() {
     operationsElem.onclick = function(e) {
       e.preventDefault();
       switch (e.target.dataset.cmd) {
@@ -239,49 +249,212 @@ const view = {
     };
   },
 
-  handleHistoryDisplayOverflow: function() {
-    console.log("TIME TO CAROUSEL HISTORY!");
+  /**
+   * Animate an element's right position/property using jQuery
+   *
+   * @param {HTMLElement} elem Element to be animated
+   * @param {string} changeStr jQuery Property Modifier String
+   * @param {number} speed Speed in ms
+   */
+  animateElemRightPosition(elem, changeStr, speed) {
+    $(elem).animate(
+      {
+        right: changeStr
+      },
+      speed
+    );
   },
 
-  handleCurrentDisplayOverflow: function() {
-    console.log("TIME TO CAROUSEL CURRENT!");
+  scrollHistoryDisplayLeft: function(e) {
+    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
+    const historyTxtRelLft = parseInt($(historyDisplayTxtElem).position().left);
+    const scrollAmt = fontSize + ltrSpacing;
+
+    if (historyTxtRelLft > 0) return;
+
+    if (historyTxtRelLft + scrollAmt > 0) {
+      view.animateElemRightPosition(
+        historyDisplayTxtElem,
+        `-=${-historyTxtRelLft + ltrSpacing}`,
+        100
+      );
+    } else {
+      view.animateElemRightPosition(
+        historyDisplayTxtElem,
+        `-=${scrollAmt}`,
+        100
+      );
+    }
+
+    view.updateHistoryScrolRightElemVisibility();
+  },
+
+  scrollCurrentDisplayLeft: function(e) {
+    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
+    const currentTxtRelLft = parseInt($(currentDisplayTxtElem).position().left);
+    const scrollAmt = fontSize + ltrSpacing;
+
+    if (currentTxtRelLft > 0) return;
+
+    if (currentTxtRelLft + scrollAmt > 0) {
+      view.animateElemRightPosition(
+        currentDisplayTxtElem,
+        `-=${-currentTxtRelLft + ltrSpacing}`,
+        100
+      );
+    } else {
+      view.animateElemRightPosition(
+        currentDisplayTxtElem,
+        `-=${scrollAmt}`,
+        100
+      );
+    }
+
+    view.updateCurrentScrolRightElemVisibility();
+  },
+
+  scrollHistoryDisplayRight: function(e) {
+    const fontSize = parseInt($(historyDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(historyDisplayTxtElem).css("letterSpacing"));
+    const historyTxtCssRight = parseInt($(historyDisplayTxtElem).css("right"));
+    const scrollAmt = fontSize + ltrSpacing;
+
+    if (historyTxtCssRight >= 0) return;
+    if (historyTxtCssRight + scrollAmt > 0) {
+      view.animateElemRightPosition(historyDisplayTxtElem, `0`, 100);
+    } else {
+      view.animateElemRightPosition(
+        historyDisplayTxtElem,
+        `+=${scrollAmt}`,
+        100
+      );
+    }
+
+    view.updateHistoryScollLeftElemVisibility();
+  },
+
+  scrollCurrentDisplayRight: function(e) {
+    const fontSize = parseInt($(currentDisplayTxtElem).css("fontSize"));
+    const ltrSpacing = parseInt($(currentDisplayTxtElem).css("letterSpacing"));
+    const currentTxtCssRight = parseInt($(currentDisplayTxtElem).css("right"));
+    const scrollAmt = fontSize + ltrSpacing;
+
+    if (currentTxtCssRight >= 0) return;
+    if (currentTxtCssRight + scrollAmt > 0) {
+      view.animateElemRightPosition(currentDisplayTxtElem, `0`, 100);
+    } else {
+      view.animateElemRightPosition(
+        currentDisplayTxtElem,
+        `+=${scrollAmt}`,
+        100
+      );
+    }
+
+    view.updateCurrentScrollLeftElemVisibility();
+  },
+
+  setupScrollElemsClickListeners: function() {
+    historyScrollLeftElem.onclick = view.scrollHistoryDisplayLeft;
+    currentScrollLeftElem.onclick = view.scrollCurrentDisplayLeft;
+    historyScrollRightElem.onclick = view.scrollHistoryDisplayRight;
+    currentScrollRightElem.onclick = view.scrollCurrentDisplayRight;
+  },
+
+  setupEventListeners: function() {
+    this.setupOperationsElemClickListener();
+    this.setupScrollElemsClickListeners();
+  },
+
+  updateDisplayWLimits: function() {
+    this.historyTxtWLimit = historyDisplayElem.offsetWidth;
+    this.currentTxtWLimit = currentDisplayElem.offsetWidth;
+
+    this.maxHistoryDisplayTxtW = historyDisplayTxtElem.offsetWidth;
+    this.maxCurrentDisplaYTxtW = currentDisplayTxtElem.offsetWidth;
+  },
+
+  updateHistoryScollLeftElemVisibility: function() {
+    if (!this.historyDisplayIsOverflown) {
+      if ($(".js-history-scroll-l").is(":visible")) {
+        $(".js-history-scroll-l").fadeOut("fast");
+      }
+      return;
+    }
+    $(".js-history-scroll-l").fadeIn("fast");
+  },
+
+  updateCurrentScrollLeftElemVisibility: function() {
+    if (!this.currentDisplayIsOverflown) {
+      if ($(".js-current-scroll-l").is(":visible")) {
+        $(".js-current-scroll-l").fadeOut("fast");
+      }
+      return;
+    }
+    $(".js-current-scroll-l").fadeIn("fast");
+  },
+
+  updateHistoryScrolRightElemVisibility: function() {
+    if (view.historyDisplayIsOverflown) {
+      $(".js-history-scroll-r").fadeIn("fast");
+    } else {
+      if ($(".js-history-scroll-r").is(":visible")) {
+        $(".js-history-scroll-r").fadeOut("fast");
+      }
+    }
+  },
+
+  updateCurrentScrolRightElemVisibility: function() {
+    if (view.currentDisplayIsOverflown) {
+      $(".js-current-scroll-r").fadeIn("fast");
+    } else {
+      if ($(".js-current-scroll-r").is(":visible")) {
+        $(".js-current-scroll-r").fadeOut("fast");
+      }
+    }
   },
 
   handleDisplayOverflow: function() {
-    const historyTxtWLimit =
-      historyDisplayElem.offsetWidth -
-      parseInt(getComputedStyle(historyDisplayTxtElem)["fontSize"]) -
-      parseInt(getComputedStyle(historyDisplayTxtElem)["letterSpacing"]);
-    const currentTxtWLimit =
-      currentDisplayElem.offsetWidth -
-      parseInt(getComputedStyle(currentDisplayTxtElem)["fontSize"]) -
-      parseInt(getComputedStyle(currentDisplayTxtElem)["letterSpacing"]);
+    this.updateDisplayWLimits();
 
-    if (historyDisplayTxtElem.offsetWidth > this.maxHistoryDisplayTxtW) {
-      this.maxHistoryDisplayTxtW = historyDisplayTxtElem.offsetWidth;
+    if (this.maxHistoryDisplayTxtW > this.historyTxtWLimit) {
+      this.historyDisplayIsOverflown = true;
+    } else {
+      this.historyDisplayIsOverflown = false;
     }
-    if (currentDisplayTxtElem.offsetWidth > this.maxCurrentDisplaYTxtW) {
-      this.maxCurrentDisplaYTxtW = currentDisplayTxtElem.offsetWidth;
+    if (this.maxCurrentDisplaYTxtW > this.currentTxtWLimit) {
+      this.currentDisplayIsOverflown = true;
+    } else {
+      this.currentDisplayIsOverflown = false;
     }
 
-    if (this.maxHistoryDisplayTxtW >= historyTxtWLimit) {
-      this.handleHistoryDisplayOverflow();
-    }
-    if (this.maxCurrentDisplaYTxtW >= currentTxtWLimit) {
-      this.handleCurrentDisplayOverflow();
-    }
+    this.updateHistoryScollLeftElemVisibility();
+    this.updateCurrentScrollLeftElemVisibility();
+    this.updateHistoryScrolRightElemVisibility();
+    this.updateCurrentScrolRightElemVisibility();
+  },
+
+  scrollDisplayToTheEnd: function() {
+    document.querySelectorAll("[class*='display-txt']").forEach(disp => {
+      $(disp).animate(
+        {
+          right: "0"
+        },
+        100
+      );
+    });
   },
 
   updateView: function() {
     historyDisplayTxtElem.textContent = calculator.history;
     currentDisplayTxtElem.textContent = calculator.currentCmd;
 
+    this.scrollDisplayToTheEnd();
     this.handleDisplayOverflow();
   }
 
   // TODO: Add Alert/Error service
-
-  // TODO: Alter Top Display When Inputs are longer than the container
 };
 
 // Start the calculator app

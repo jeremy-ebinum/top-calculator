@@ -13,9 +13,9 @@
   <body>
     <div class="o-container">
       <div class="c-calculator">
-        <div class="c-display">
+        <div class="c-display js-display">
           <button
-            class="c-display__top-scroller c-btn  c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-history-display-scroller"
+            class="c-display__top-scroller-left c-btn  c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-history-scroll-l"
           >
             <i class="fas fa-angle-left"></i>
           </button>
@@ -23,13 +23,23 @@
             <span class="c-display__top-txt js-history-display-txt"></span>
           </div>
           <button
-            class="c-display__bottom-scroller c-btn c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-current-display-scroller"
+            class="c-display__top-scroller-right c-btn  c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-history-scroll-r"
+          >
+            <i class="fas fa-angle-right"></i>
+          </button>
+          <button
+            class="c-display__bottom-scroller-left c-btn c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-current-scroll-l"
           >
             <i class="fas fa-angle-left"></i>
           </button>
           <div class="c-display__bottom js-current-display">
             <span class="c-display__bottom-txt js-current-display-txt"></span>
           </div>
+          <button
+            class="c-display__bottom-scroller-right c-btn c-btn--muted c-btn--rounder c-btn--small c-btn--is-hidden js-current-scroll-r"
+          >
+            <i class="fas fa-angle-right"></i>
+          </button>
         </div>
         <div class="c-operations js-operations">
           <div class="c-operations__cmd">

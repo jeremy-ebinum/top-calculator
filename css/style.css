@@ -100,11 +100,13 @@ body {
 .c-display {
   display: grid;
   grid-template-areas:
-    "d-top-scroller d-top"
-    "d-bottom-scroller d-bottom";
-  grid-template-columns: calc(var(--btn-small-w) + 5px) 1fr;
+    "d-top-scroller-left d-top d-top-scroller-right"
+    "d-bottom-scroller-left d-bottom d-bottom-scroller-right";
+  grid-template-columns: var(--btn-small-w) 1fr var(--btn-small-w);
   grid-template-rows: 40% 60%;
-  padding: 1rem;
+  grid-gap: 0 5px;
+  /* align-items: center; */
+  padding: 1rem 0.5rem;
   height: var(--calculator-display-h);
   background-color: var(--calculator-display-bg-color);
 }
@@ -114,6 +116,7 @@ body {
   /* display: flex; */
   /* justify-content: flex-end; */
   /* align-items: flex-end; */
+  /* border: 1px solid gold; */
   position: relative;
   text-align: right;
   overflow: hidden;
@@ -121,7 +124,6 @@ body {
   vertical-align: middle;
 }
 
-/* TODO: Convert Top Display to Carousel */
 .c-display__top {
   /* border: 1px solid coral; */
   grid-area: d-top;
@@ -132,13 +134,13 @@ body {
 .c-display__bottom-txt {
   font-family: "Roboto";
   position: absolute;
-  right: 0;
+  right: 0px;
 }
 
 .c-display__top-txt {
-  bottom: 0;
+  bottom: 15%;
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   letter-spacing: 1px;
   vertical-align: baseline;
   color: var(--history-text-color);
@@ -158,20 +160,30 @@ body {
   letter-spacing: 2px;
 }
 
-.c-display__top-scroller,
-.c-display__bottom-scroller {
+.c-display__top-scroller-left,
+.c-display__bottom-scroller-left,
+.c-display__top-scroller-right,
+.c-display__bottom-scroller-right {
   align-self: center;
   /* position: absolute; */
   /* left: 0; */
   /* border: 1px solid red !important; */
 }
 
-.c-display__top-scroller {
-  grid-area: d-top-scroller;
+.c-display__top-scroller-left {
+  grid-area: d-top-scroller-left;
 }
 
-.c-display__bottom-scroller {
-  grid-area: d-bottom-scroller;
+.c-display__bottom-scroller-left {
+  grid-area: d-bottom-scroller-left;
+}
+
+.c-display__top-scroller-right {
+  grid-area: d-top-scroller-right;
+}
+
+.c-display__bottom-scroller-right {
+  grid-area: d-bottom-scroller-right;
 }
 
 .c-operations {
