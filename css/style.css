@@ -179,7 +179,6 @@ body {
 
 .c-help-list {
   border: 2px solid var(--primary-color);
-  /* padding: 0.5rem 0.75rem; */
 }
 
 .c-help-list__item {
@@ -189,11 +188,9 @@ body {
   font-family: "Roboto";
   display: flex;
   justify-content: space-between;
-  /* margin-bottom: 0.25rem; */
 }
 
 .c-list-header-txt {
-  /* text-decoration: underline; */
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -201,10 +198,6 @@ body {
 .c-list-term {
   font-weight: 700;
   margin-right: 1rem;
-}
-
-.c-list-term::after {
-  /* content: ":"; */
 }
 
 .c-list-desc {
@@ -215,7 +208,6 @@ body {
   width: var(--calculator-w);
   border: 1px solid var(--accent-color-1);
   border-radius: 3px;
-  /* margin-top: 1rem; */
 }
 
 .c-display,
@@ -368,7 +360,6 @@ body {
 }
 
 .c-help-modal__content {
-  /* width: 100%; */
   display: flex;
   flex-direction: column;
   justify-content: center;
