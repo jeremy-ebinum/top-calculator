@@ -22,15 +22,26 @@ const calculator = {
   isCalculating: false,
   isDisplayingResult: false,
 
+  generateIntOrFloatResult: function(result) {
+    if (Number.isInteger(result)) {
+      return result;
+    } else {
+      return result.toFixed(calculator.decimalLimit);
+    }
+  },
+
   operations: {
     "+": function(a, b) {
-      return (a + b).toFixed(calculator.decimalLimit);
+      let result = a + b;
+      return calculator.generateIntOrFloatResult(result);
     },
     "-": function(a, b) {
-      return (a - b).toFixed(calculator.decimalLimit);
+      let result = a - b;
+      return calculator.generateIntOrFloatResult(result);
     },
     "×": function(a, b) {
-      return (a * b).toFixed(calculator.decimalLimit);
+      let result = a * b;
+      return calculator.generateIntOrFloatResult(result);
     },
     "÷": function(a, b) {
       if (b === 0) {
@@ -38,7 +49,8 @@ const calculator = {
         handlers.clear();
         return;
       }
-      return (a / b).toFixed(calculator.decimalLimit);
+      let result = a / b;
+      return calculator.generateIntOrFloatResult(result);
     }
   },
 
