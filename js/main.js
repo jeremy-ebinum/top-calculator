@@ -458,6 +458,7 @@ const view = {
 
   setupKeyDownListener: function() {
     window.addEventListener("keydown", function(e) {
+      if (e.code === "Enter") e.preventDefault();
       view.handleScrollButtonPresses(e);
       view.handleDigitButtonPresses(e);
       view.handleOperatorButtonPresses(e);
