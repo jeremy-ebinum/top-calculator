@@ -17,7 +17,7 @@
       <div class="c-help-toggle">
         <button
           href="#"
-          class="c-btn c-btn--light-color c-btn--flat js-help-modal-open"
+          class="c-btn c-btn--light c-btn--flat js-help-modal-open"
           onclick="view.openHelpModal()"
         >
           Help
@@ -58,23 +58,47 @@
         <!-- Operations Component -->
         <div class="c-operations js-operations">
           <div class="c-operations__cmd">
-            <button class="c-btn c-btn--alt-color" data-cmd="CE">
+            <button
+              class="c-btn c-btn--alt"
+              data-cmd="operand-mod"
+              data-mod="%"
+            >
+              %
+            </button>
+          </div>
+          <div class="c-operations__cmd">
+            <button class="c-btn c-btn--alt" data-cmd="operator" data-op="√">
+              &Sqrt;
+            </button>
+          </div>
+          <div class="c-operations__cmd">
+            <button class="c-btn c-btn--alt" data-cmd="operator" data-op="^2">
+              x²
+            </button>
+          </div>
+          <div class="c-operations__cmd">
+            <button class="c-btn c-btn--alt" data-cmd="operator" data-op="1/">
+              1/x
+            </button>
+          </div>
+          <div class="c-operations__cmd">
+            <button class="c-btn c-btn--alt" data-cmd="CE">
               CE
             </button>
           </div>
           <div class="c-operations__cmd">
-            <button class="c-btn c-btn--alt-color" data-cmd="C">
+            <button class="c-btn c-btn--alt" data-cmd="C">
               C
             </button>
           </div>
           <div class="c-operations__cmd">
-            <button class="c-btn c-btn--alt-color" data-cmd="backspace">
+            <button class="c-btn c-btn--alt" data-cmd="backspace">
               &larr;
             </button>
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operator"
               data-op="÷"
             >
@@ -98,7 +122,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operator"
               data-op="×"
             >
@@ -122,7 +146,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operator"
               data-op="-"
             >
@@ -146,7 +170,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operator"
               data-op="+"
             >
@@ -155,7 +179,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operand-mod"
               data-mod="+-"
             >
@@ -169,7 +193,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operand-mod"
               data-mod="."
             >
@@ -178,7 +202,7 @@
           </div>
           <div class="c-operations__cmd">
             <button
-              class="c-btn c-btn--alt-color u-bigger-font"
+              class="c-btn c-btn--alt u-bigger-font"
               data-cmd="operator"
               data-op="="
             >
@@ -189,8 +213,19 @@
       </div>
 
       <!-- Help Modal  -->
-      <div class="c-help-modal c-help-modal--is-hidden js-help-modal">
+      <div
+        class="c-help-modal c-help-modal--is-hidden js-help-modal"
+        data-modal-type="help"
+      >
         <div class="c-help-modal__content">
+          <div class="c-help-modal__dismiss">
+            <button
+              class="c-btn c-btn--noBg c-btn--darkText js-dismiss-help"
+              onclick="view.closeHelpModal()"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
           <h2 class="c-help-modal__heading">Keyboard Controls</h2>
 
           <dl class="c-help-list">
@@ -242,14 +277,26 @@
               <dt class="c-list-term">. | Numpad .</dt>
               <dd class="c-list-desc">Decimal Point</dd>
             </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Left Arrow</dt>
+              <dd class="c-list-desc">Scroll Bottom Display Left</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Right Arrow</dt>
+              <dd class="c-list-desc">Scroll Bottom Display Right</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Up Arrow</dt>
+              <dd class="c-list-desc">Scroll Top Display Left</dd>
+            </div>
+            <div class="c-help-list__item">
+              <dt class="c-list-term">Down Arrow</dt>
+              <dd class="c-list-desc">Scroll Top Display Right</dd>
+            </div>
           </dl>
 
-          <div class="c-help-modal__close">
-            <button
-              type="js-help-modal-close"
-              class="c-btn"
-              onclick="view.closeHelpModal()"
-            >
+          <div class="c-help-modal__ok">
+            <button class="c-btn" onclick="view.closeHelpModal()">
               Ok
             </button>
           </div>

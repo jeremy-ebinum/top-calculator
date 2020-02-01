@@ -17,6 +17,8 @@
   --alert-bg-color: hsl(0, 0%, 0%);
   --alert-error-bg-color1: hsla(0, 100%, 50%, 75%);
   --alert-error-bg-color2: hsla(0, 100%, 50%, 40%);
+  --alert-info-bg-color1: hsla(197, 71%, 50%, 75%);
+  --alert-info-bg-color2: hsla(197, 71%, 50%, 40%);
   --alert-txt-color: hsl(240, 100%, 99%);
   --calculator-w: 310px;
   --calculator-display-h: 110px;
@@ -113,7 +115,7 @@ body {
   font-size: inherit;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 400ms ease, color 200ms ease;
+  transition: background-color 400ms ease, color 200ms ease, transform 0.3s ease;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
@@ -122,23 +124,39 @@ body {
   background: var(--accent-color-1);
 }
 
-.c-btn.c-btn--alt-color {
+.c-btn.c-btn--noBg {
+  background: none;
+}
+
+.c-btn.c-btn--noBg:hover {
+  background: none;
+}
+
+.c-btn.c-btn--alt {
   background: var(--secondary-color);
 }
 
-.c-btn.c-btn--alt-color:hover {
+.c-btn.c-btn--alt:hover {
   background: var(--accent-color-2);
   color: var(--dark-text-color);
 }
 
-.c-btn.c-btn--light-color {
+.c-btn.c-btn--light {
   background: var(--light-text-color);
   color: var(--dark-text-color);
 }
 
-.c-btn.c-btn--light-color:hover {
+.c-btn.c-btn--light:hover {
   background: var(--dark-text-color);
   color: var(--light-text-color);
+}
+
+.c-btn.c-btn--darkText {
+  color: var(--dark-text-color);
+}
+
+.c-btn.c-btn--darkText:hover {
+  transform: scale(1.3);
 }
 
 .c-btn.c-btn--small {
@@ -233,6 +251,15 @@ body {
     var(--alert-error-bg-color2),
     var(--alert-error-bg-color1),
     var(--alert-error-bg-color2)
+  );
+}
+
+.c-alert.c-alert--info {
+  background: linear-gradient(
+    45deg,
+    var(--alert-info-bg-color2),
+    var(--alert-info-bg-color1),
+    var(--alert-info-bg-color2)
   );
 }
 
@@ -360,6 +387,7 @@ body {
 }
 
 .c-help-modal__content {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -367,6 +395,13 @@ body {
   padding: 1rem;
   margin-top: 1rem;
   background-color: #fff;
+}
+
+.c-help-modal__dismiss {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.3rem;
 }
 
 .c-help-modal__heading {
@@ -379,7 +414,7 @@ body {
   text-align: center;
 }
 
-.c-help-modal__close {
+.c-help-modal__ok {
   width: 100px;
   height: 30px;
   margin: 0.5rem;
@@ -406,7 +441,7 @@ body {
 @media (min-width: 720px) {
   :root {
     --calculator-w: 640px;
-    --calculator-display-h: 150px;
+    --calculator-display-h: 175px;
     --calculator-display-bg-color: #000a0d;
     --display-top-font-size: 1.3rem;
     --display-bottom-font-size: 2.5rem;
@@ -421,6 +456,10 @@ body {
 }
 
 @media (min-width: 960px) {
+  :root {
+    --calculator-display-h: 190px;
+  }
+
   .o-container {
     justify-content: flex-start;
     align-items: flex-start;

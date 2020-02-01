@@ -7,14 +7,19 @@ const historyScrollLeftElem = document.querySelector(".js-history-scroll-l");
 const currentScrollLeftElem = document.querySelector(".js-current-scroll-l");
 const historyScrollRightElem = document.querySelector(".js-history-scroll-r");
 const currentScrollRightElem = document.querySelector(".js-current-scroll-r");
+const bodyStyle = document.body.style;
 
 const calculator = {
   history: "",
-  queuedCmd: "",
+  queuedOp: "",
   queuedOperator: "",
-  lastOperator: "",
+  latestOperator: "",
+  repeatOperator: null,
   currentCmd: "0",
+  repeatCmd: null,
+  lastCmd: null,
   currentResult: "",
+  lastResult: "",
   decimalLimit: 2,
   isCleared: true,
   hasFloat: false,
@@ -47,20 +52,33 @@ const calculator = {
       if (b === 0) {
         view.displayAlert("error", "You cannot divide by zero");
         handlers.clear();
-        return;
+        return 0;
       }
       let result = a / b;
+      return calculator.generateIntOrFloatResult(result);
+    },
+
+    "√": function(a) {
+      let result = Math.sqrt(a);
       return calculator.generateIntOrFloatResult(result);
     }
   },
 
   operate: function(calculation) {
     let expressionArr = calculation.split(" ");
-    let firstOperand = parseFloat(expressionArr[0]);
-    let operator = expressionArr[1];
-    let secondOperand = parseFloat(expressionArr[2]);
+    let singleOperand, firstOperand, secondOperand, operator;
+    if (expressionArr.length > 2) {
+      firstOperand = parseFloat(expressionArr[0]);
+      operator = expressionArr[1];
+      secondOperand = parseFloat(expressionArr[2]);
 
-    return this.operations[operator](firstOperand, secondOperand).toString();
+      return this.operations[operator](firstOperand, secondOperand).toString();
+    } else {
+      singleOperand = parseFloat(expressionArr[1]);
+      operator = expressionArr[0];
+
+      return this.operations[operator](singleOperand).toString();
+    }
   }
 };
 
@@ -92,7 +110,11 @@ const handlers = {
     const mod = target.dataset.mod;
     const currentCmdIsNegative = calculator.currentCmd.startsWith("-");
 
-    if (calculator.isCleared && mod == "+-") return;
+    if (calculator.isCleared && (mod == "+-" || mod == "%")) return;
+    if (!calculator.isCleared && mod == "%") {
+      let currentCmdInt = parseInt(calculator.currentCmd);
+      calculator.currentCmd = (currentCmdInt / 100).toString();
+    }
     if (!calculator.isCleared && !currentCmdIsNegative && mod == "+-") {
       calculator.currentCmd = "-" + calculator.currentCmd;
     }
@@ -110,14 +132,21 @@ const handlers = {
 
   clear: function() {
     calculator.history = "";
-    calculator.currentCmd = "0";
-    calculator.currentResult = "";
-    calculator.queuedCmd = "";
+    calculator.queuedOp = "";
     calculator.queuedOperator = "";
-    calculator.lastOperator = "";
+    calculator.latestOperator = "";
+    calculator.repeatOperator = null;
+    calculator.currentCmd = "0";
+    calculator.repeatCmd = null;
+    calculator.lastCmd = null;
+    calculator.currentResult = "";
+    calculator.lastResult = "";
     calculator.hasFloat = false;
     calculator.hasQueuedOp = false;
+    calculator.isCalculating = false;
+    calculator.isDisplayingResult = false;
     calculator.isCleared = true;
+
     view.updateView();
   },
 
@@ -146,12 +175,28 @@ const handlers = {
     view.updateView();
   },
 
-  // Determine calculation to peform based on if we have a previous result
-  determineCalc: function() {
+  determineCalcForRepeatEquals: function() {
     let calculation;
 
-    if (calculator.currentResult.length == 0) {
-      calculation = calculator.queuedCmd + " " + calculator.currentCmd;
+    if (calculator.repeatOperator == "√") {
+      calculation = `√ ${calculator.currentResult}`;
+    } else {
+      calculation =
+        calculator.currentResult +
+        ` ${calculator.repeatOperator} ` +
+        calculator.repeatCmd;
+    }
+
+    return calculation;
+  },
+
+  determineCalcForRepeatOps() {
+    let calculation;
+
+    if (calculator.latestOperator == "=") {
+      calculation = this.determineCalcForRepeatEquals();
+    } else if (calculator.latestOperator == "√") {
+      calculation = `${calculator.queuedOperator} ${calculator.currentResult}`;
     } else {
       calculation =
         calculator.currentResult +
@@ -162,59 +207,192 @@ const handlers = {
     return calculation;
   },
 
+  determineCalcForOneOffSqrt: function() {
+    let calculation;
+
+    if (calculator.queuedOperator == "=") {
+      calculation = `√ ${calculator.currentCmd}`;
+    } else {
+      calculator.currentResult = calculator.lastResult || calculator.lastCmd;
+      calculator.currentCmd = calculator.operate(`√ ${calculator.currentCmd}`);
+      calculation =
+        calculator.currentResult +
+        ` ${calculator.queuedOperator} ` +
+        calculator.currentCmd;
+    }
+
+    return calculation;
+  },
+
+  determineCalcForOneOffOps() {
+    let calculation;
+
+    // TODO: Hook intermediary operations
+    if (calculator.latestOperator == "√") {
+      calculation = this.determineCalcForOneOffSqrt();
+    } else {
+      calculation =
+        calculator.currentResult +
+        ` ${calculator.queuedOperator} ` +
+        calculator.currentCmd;
+    }
+
+    return calculation;
+  },
+  // Determine calculation to peform based on if we have a previous result
+  determineCalc: function() {
+    let calculation;
+
+    if (calculator.currentResult.length == 0) {
+      calculation = calculator.queuedOp + " " + calculator.currentCmd;
+    } else {
+      if (calculator.queuedOperator == calculator.latestOperator) {
+        // TODO: This is for repeated operations
+        calculation = this.determineCalcForRepeatOps();
+      } else {
+        // TODO: This is for one off operations
+        calculation = this.determineCalcForOneOffOps();
+      }
+    }
+
+    return calculation;
+  },
+
+  updateHistoryWhileNotCalculating: function(operator) {
+    if (calculator.queuedOp.length > 0) {
+      // Make sure history shows the chain of commands and the latest operator
+      if (
+        calculator.latestOperator == "√" ||
+        calculator.queuedOperator == "√"
+      ) {
+        calculator.history = calculator.queuedOp + " " + ` ${operator}`;
+      } else {
+        calculator.history = calculator.queuedOp.slice(0, -2) + ` ${operator}`;
+      }
+    } else {
+      // For first time inputs just add the operator to front of history
+      calculator.history = calculator.currentCmd + ` ${operator}`;
+    }
+  },
+
+  updateCalcHistoryForEquals() {
+    if (calculator.queuedOperator != "=") {
+      calculator.repeatOperator = calculator.queuedOperator;
+      debug.logCmdsAndQueuedOp();
+      calculator.repeatCmd = calculator.currentCmd;
+    }
+
+    if (calculator.repeatOperator == "√") {
+      calculator.history = calculator.queuedOp;
+    } else {
+      calculator.history =
+        calculator.queuedOp +
+        " " +
+        calculator.repeatCmd +
+        ` ${calculator.repeatOperator}`;
+    }
+  },
+
+  updateCalcHistoryForSqrt(operator) {
+    if (operator == "√" || calculator.queuedOperator == "√") {
+      if (!calculator.hasQueuedOp) {
+        calculator.history = calculator.queuedOp + " " + calculator.currentCmd;
+      } else if (calculator.hasQueuedOp && calculator.queuedOperator !== "√") {
+        calculator.history = calculator.queuedOp;
+      } else {
+        calculator.history = calculator.queuedOp + " " + calculator.currentCmd;
+      }
+    }
+  },
+
+  determineCalcAndUpdateHistory: function(operator) {
+    calculator.currentResult = calculator.operate(this.determineCalc());
+    calculator.lastResult = calculator.currentResult;
+    debug.logOperators();
+
+    if (operator == "=") {
+      this.updateCalcHistoryForEquals(operator);
+    } else if (operator == "√") {
+      this.updateCalcHistoryForSqrt(operator);
+    } else {
+      calculator.history =
+        calculator.queuedOp + " " + calculator.currentCmd + ` ${operator}`;
+    }
+
+    calculator.queuedOp = calculator.history;
+    calculator.hasFloat = false;
+    calculator.isCalculating = false;
+  },
+
   /*
     Make sure to preserve calculator history and store queued commands
     We only want results when 2 operands are available to operate on
   */
+  //  TODO: Handle 1/x and x²
   performOperation: function(operator) {
+    calculator.latestOperator = operator;
+
     if (calculator.isCalculating) {
-      calculator.currentResult = calculator.operate(this.determineCalc());
-      calculator.hasFloat = false;
-      calculator.history =
-        calculator.queuedCmd + " " + calculator.currentCmd + ` ${operator}`;
-      calculator.queuedCmd = calculator.history;
-      calculator.isCalculating = false;
+      this.determineCalcAndUpdateHistory(operator);
     } else {
-      if (calculator.queuedCmd.length > 0) {
-        calculator.history = calculator.queuedCmd.slice(0, -2) + ` ${operator}`;
-      } else {
-        calculator.history = calculator.currentCmd + ` ${operator}`;
-      }
-      calculator.queuedCmd = calculator.history;
+      this.updateHistoryWhileNotCalculating(operator);
+      calculator.queuedOp = calculator.history;
     }
 
-    calculator.queuedOperator = calculator.history.charAt(
-      calculator.history.length - 1
-    );
-
-    calculator.lastOperator = operator;
+    calculator.queuedOperator = operator;
+    calculator.lastCmd = calculator.currentCmd;
   },
 
-  handleRepeatedEquals: function() {
-    if (calculator.lastOperator != "=") return;
-    let repeatOperand = calculator.queuedCmd.substr(
-      calculator.queuedCmd.length - 3,
-      1
-    );
+  setupRepeatedEquals: function() {
+    if (!calculator.repeatOperator) {
+      calculator.repeatOperator = calculator.queuedOperator;
+    }
+
+    if (!calculator.repeatCmd) {
+      calculator.repeatCmd = calculator.lastCmd;
+    }
     calculator.isCalculating = true;
-    calculator.currentResult = calculator.currentCmd;
-    calculator.currentCmd = repeatOperand;
   },
 
+  setupSquareRoots: function() {
+    if (!calculator.hasQueuedOp || calculator.latestOperator == "√") {
+      calculator.isCalculating = true;
+      calculator.queuedOp = "√";
+    }
+
+    if (calculator.hasQueuedOp) {
+      calculator.isCalculating = true;
+      calculator.currentResult = calculator.currentCmd;
+      if (calculator.latestOperator !== "√") {
+        calculator.queuedOp += ` √ ${calculator.currentCmd}`;
+      }
+    }
+  },
   /*
-    Only perform = computation when there is a queuedCmd
+    Only perform = computation when there is a queuedOp
     Display only the current Result on Equals operation
   */
   queueOperation: function(target) {
     const operator = target.dataset.op;
-    if (calculator.queuedCmd.length == 0) {
+    if (operator == "1/" || operator == "^2") {
+      view.displayAlert("info", "Operation not yet implemented");
+      return;
+    }
+
+    if (calculator.queuedOp.length == 0) {
       calculator.isCalculating = false;
     }
-    if (operator == "=" && calculator.queuedCmd.length > 0) {
-      this.handleRepeatedEquals();
-      this.performOperation(calculator.queuedOperator);
-      calculator.history = "";
-      calculator.lastOperator = "=";
+    if (operator == "√") {
+      this.setupSquareRoots();
+    }
+    if (operator == "=") {
+      if (calculator.queuedOp.length > 0) {
+        this.setupRepeatedEquals();
+        this.performOperation(operator);
+        calculator.history = "";
+      } else {
+        view.displayAlert("error", "There are no operands to calculate");
+      }
     }
     if (operator != "=") {
       this.performOperation(operator);
@@ -574,7 +752,8 @@ const view = {
 
   createAlert(type, message) {
     const alertTypes = {
-      error: "c-alert--error"
+      error: "c-alert--error",
+      info: "c-alert--info"
     };
 
     if (!alertTypes[type]) return;
@@ -587,6 +766,22 @@ const view = {
     alert.append(msg);
 
     return alert;
+  },
+
+  dismissModalOnOuterClick(e) {
+    const type = e.target.dataset.modalType;
+
+    if (!type) {
+      window.removeEventListener("click", view.dismissModalOnOuterClick);
+      return;
+    }
+
+    const dismissClasses = {
+      help: ".js-dismiss-help"
+    };
+
+    $(dismissClasses[type]).click();
+    window.removeEventListener("click", view.dismissModalOnOuterClick);
   },
 
   displayAlert(type, message, autoCloseTime = 3000) {
@@ -605,6 +800,10 @@ const view = {
       .hide()
       .fadeIn(300);
     bodyStyle.overflow = "hidden";
+
+    setTimeout(() => {
+      window.addEventListener("click", view.dismissModalOnOuterClick);
+    }, 0);
   },
 
   closeHelpModal: function() {
@@ -620,6 +819,26 @@ const view = {
 
     this.scrollDisplayToTheEnd();
     this.handleDisplayOverflow();
+  }
+};
+
+const debug = {
+  logOperators: function() {
+    console.log("Queued Operator is:", calculator.queuedOperator);
+    console.log("Latest Operator is:", calculator.latestOperator);
+    console.log("Repeat Operator is:", calculator.repeatOperator);
+  },
+
+  logCmdsAndQueuedOp: function() {
+    console.log("Queued Operation is:", calculator.queuedOp);
+    console.log("Current Cmd is:", calculator.currentCmd);
+    console.log("Last Cmd is:", calculator.lastCmd);
+    console.log("Repeat Cmd is:", calculator.repeatCmd);
+  },
+
+  logResults: function() {
+    console.log("Last Result is:", calculator.lastResult);
+    console.log("Current Result is:", calculator.currentResult);
   }
 };
 
